@@ -25,18 +25,18 @@ def parab_derivative(focus):
     
 
 def parab_linelength(derivative):
-    x, d = sy.symbols('x d') # r is the radius of the aperture
+    x, r = sy.symbols('x r') # r is the radius of the aperture
     distance = sy.sqrt((1+(derivative)**2))
-    integral = sy.integrate(distance, (x, 0, d)) 
+    integral = sy.integrate(distance, (x, 0, r)) 
     print(f"Definite integral: \n\n{integral}\n")
     return integral
     
 
-def focus_lines(x_domain, focus, aperature):
+def focus_lines(x_domain, focus, aperture):
     # build domain to graph intersecting lines to the focus
     y_domain = []
-    x2 = half_aperature = aperature / 2
-    y2 = parabola_function(half_aperature, focus)
+    x2 = half_aperture = aperture / 2
+    y2 = parabola_function(half_aperture, focus)
     slope = (y2 - focus) / (x2)
     for x_val in x_domain:
         y_val = slope * (x_val - x2) + y2
@@ -52,12 +52,12 @@ def inverse_xdomain(x_domain):
 
 
 def find_aperture(indef_integral, arc_length):
-    d = sy.symbols('d')
-    f = indef_integral - arc_length
-    diameter = sy.nsolve(f, (d), arc_length) #arc_length provides an initial guess, in this case.
-    print("Aperature diameter: {:.6} mm".format(str(diameter)))
-    radius = diameter / 2
-    print("Aperature radius: {:.6} mm".format(str(radius)))
+    r = sy.symbols('r')
+    f = indef_integral - (arc_length/2)
+    radius = sy.nsolve(f, (r), arc_length) #arc_length provides an initial guess, in this case.
+    diameter = radius * 2
+    print("Aperture diameter: {:.6} mm".format(str(diameter)))
+    print("Aperture radius: {:.6} mm".format(str(radius)))
     return diameter
 
 
@@ -77,9 +77,9 @@ def inch_or_milli():
 
 # attributes & operations
 sy.init_printing()
-print("Diamension in mm")
+print("Dimensions in mm")
 focal_length, sheet_width = inch_or_milli()         
-x_axis = list(range(int(-(sheet_width/2)), int((sheet_width/2))))
+x_axis = list(range(int(-(sheet_width/2)), int(((sheet_width+2)/2))))
 parabola = calc_parabola(x_axis, focal_length)
 x_axis_inverse = inverse_xdomain(x_axis) # create inverse x axis for focal line
 deriv = parab_derivative(focal_length)
